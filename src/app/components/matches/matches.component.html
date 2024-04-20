@@ -1,0 +1,26 @@
+<div class="border border-gray-100 shadow-xl">
+  @for(matches of matches$ | async; track matches.date) {
+  <div class="px-5 py-2 border-gray-100 border-t border-b bg-[#f8f9fa] color-[#1f1f1f]">
+    Match day {{ matches.date }}
+  </div>
+  <div class="grid grid-cols-12 bg-[#fafafa]">
+    @for(md of matches.data; track md.home.id) {
+    <div
+      class="flex items-center col-span-6 pl-4 py-6 cursor-pointer border-[0.5px] border-gray-100 bg-white hover:bg-[#fafafa] text-sm"
+      (click)="onClick(md)">
+      <div class="w-[75%] flex flex-col gap-2 border-[#d2d2d2] border-r py-2">
+        <div class="flex items-center gap-2">
+          <img class="w-[24px] h-[24px] block" [src]="md.home.logo" [alt]="md.home.name">
+          <span>{{ md.home.name }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <img class="w-[24px] h-[24px] block" [src]="md.away.logo" [alt]="md.away.name">
+          <span>{{ md.away.name }}</span>
+        </div>
+      </div>
+      <div class="w-[25%] text-center">{{ md.time }}</div>
+    </div>
+    }
+  </div>
+  }
+</div>

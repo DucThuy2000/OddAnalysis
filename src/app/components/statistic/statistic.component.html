@@ -1,0 +1,23 @@
+<div class="p-5 overflow-hidden w-full h-full" *ngIf="statistic">
+  <div class="grid gap-4 grid-cols-12" *ngIf="match">
+    <div class="col-span-6" *ngIf="statistic.home">
+      <mat-card class="p-2">
+        <mat-card-header class="flex items-center justify-center gap-3">
+          <img class="w-[35px] h-[35px] block" [src]="match.home.logo" [alt]="match.home.name" srcset="">
+          <span class="text-sm uppercase font-bold">{{ match.home.name }}</span>
+        </mat-card-header>
+        <c-goals-chart [data]="statistic.home.previousFixtures"></c-goals-chart>
+      </mat-card>
+    </div>
+
+    <div class="col-span-6" *ngIf="statistic.away">
+      <mat-card class="p-2">
+        <mat-card-header class="flex items-center justify-center gap-3">
+          <img class="w-[35px] h-[35px] block" [src]="match.away.logo" [alt]="match.away.name" srcset="">
+          <span class="text-sm uppercase font-bold">{{ match.away.name }}</span>
+        </mat-card-header>
+        <c-goals-chart [data]="statistic.away.previousFixtures"></c-goals-chart>
+      </mat-card>
+    </div>
+  </div>
+</div>

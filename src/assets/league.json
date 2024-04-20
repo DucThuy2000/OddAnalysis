@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "value": "epl",
+      "label": "EPL"
+    },
+    {
+      "id": 2,
+      "value": "seria",
+      "label": "Seri A"
+    }
+  ]
+}
