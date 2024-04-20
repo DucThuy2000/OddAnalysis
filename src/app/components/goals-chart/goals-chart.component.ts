@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { IStatisticFixtures } from 'models';
+import { IStatistic, IStatisticFixtures } from 'models';
 Chart.register(...registerables);
 
 @Component({
@@ -19,7 +19,7 @@ Chart.register(...registerables);
 })
 export class GoalsChartComponent implements AfterViewInit {
   @ViewChild('chart') chart: any;
-  @Input() data: IStatisticFixtures[] = [];
+  @Input() data!: IStatistic;
   canvas: any;
   ctx: any;
   constructor() {}
@@ -32,53 +32,63 @@ export class GoalsChartComponent implements AfterViewInit {
 
   initGoalsChart(): void {
     if (!this.data) return;
-
-    const { opponents, goals } = this.data.reduce(
-      (acc, fixture) => {
-        acc.opponents.push(fixture.opponent);
-        acc.goals.push(fixture.ga + fixture.gf);
-        return acc;
-      },
-      {
-        opponents: [] as string[],
-        goals: [] as number[],
-      }
-    );
+    console.log(this.data);
+    const { opponents, goalScored, goalConceded } =
+      this.data.previousFixtures.reduce(
+        (acc, fixture) => {
+          acc.opponents.push(fixture.opponent);
+          acc.goalScored.push(fixture.gf);
+          acc.goalConceded.push(fixture.ga);
+          return acc;
+        },
+        {
+          opponents: [] as string[],
+          goalScored: [] as number[],
+          goalConceded: [] as number[],
+        }
+      );
 
     new Chart(this.ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: opponents,
         datasets: [
           {
-            label: 'Total goals',
-            data: goals,
-            borderWidth: 1,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-              'rgba(255, 205, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(201, 203, 207, 0.2)',
-            ],
-            borderColor: [
-              'rgb(255, 99, 132)',
-              'rgb(255, 159, 64)',
-              'rgb(255, 205, 86)',
-              'rgb(75, 192, 192)',
-              'rgb(54, 162, 235)',
-              'rgb(153, 102, 255)',
-              'rgb(201, 203, 207)',
-            ],
+            label: 'Goals Conceded',
+            data: goalConceded,
+            borderColor: 'red',
+            borderWidth: 1.5,
+            fill: false,
+          },
+          {
+            label: 'Goals Scored',
+            data: goalScored,
+            borderColor: 'blue',
+            borderWidth: 1.5,
+            fill: false,
           },
         ],
       },
       options: {
+        layout: {
+          padding: {
+            left: 20,
+          },
+        },
         scales: {
           y: {
-            beginAtZero: true,
+            max: 8,
+            min: 0,
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: `${this.data.name} last 5 mach EPL`,
+            position: 'bottom', // Display title below the chart
           },
         },
       },
