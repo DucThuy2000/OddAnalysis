@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+::after,
+::before {
+  border-color: black;
+}
+
 html,
 body {
   height: 100%;
@@ -11,15 +16,12 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  /* background: #485563; */
-  /* background: -webkit-linear-gradient(
-    to right,
-    #29323c,
-    #485563
-  ); Chrome 10-25, Safari 5.1-6 */
-  /* background: linear-gradient(
-    to right,
-    #29323c,
-    #485563
-  ); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }

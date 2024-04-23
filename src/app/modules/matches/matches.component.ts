@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { IMatch, IMatchDetail } from 'models';
+import { IMatch, IMatchDetail } from '@shared/models';
 import { Observable } from 'rxjs';
-import { MatcheService } from 'services/matches.service';
+import { MatcheService } from '@shared/services/matches.service';
 import { MatDividerModule } from '@angular/material/divider';
 
 @Component({

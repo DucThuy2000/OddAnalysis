@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IMatch, IMatchDetail } from 'models';
+import { ICommonResponse, IMatch, IMatchDetail } from '@shared/models';
 import { Observable, map } from 'rxjs';
-import _ from 'lodash';
-import { formatDate, formatTime } from 'helpers';
+import { formatDate, formatTime } from '../helpers';
+import { env } from '../../../environment/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MatcheService {
@@ -32,7 +32,7 @@ export class MatcheService {
 
   getMatches(): Observable<IMatch[]> {
     return this.httpClient
-      .get<IMatchDetail[]>('assets/matches.json')
-      .pipe(map((matches) => this.convertMatchData(matches)));
+      .get<ICommonResponse<IMatchDetail[]>>(`${env.api}/next-match`)
+      .pipe(map((matches) => this.convertMatchData(matches.data)));
   }
 }
