@@ -16,6 +16,8 @@ export interface IStatisticFixtures {
   ga: number;
   c: number;
   ca: number;
+  corner: number;
+  cornerA: number;
 }
 
 export interface IStatistic {

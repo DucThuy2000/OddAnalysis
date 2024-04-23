@@ -1,0 +1,8 @@
+.mat-expansion-panel
+  .mat-expansion-panel-header:not([aria-disabled="true"]).cdk-program-focused {
+  background: transparent;
+}
+
+.mat-expansion-panel-header.mat-expanded {
+  height: 45px;
+}

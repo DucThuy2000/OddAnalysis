@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { env } from 'environment/environment';
+import { env } from '../../../environment/environment';
 import {
   EResponseMessage,
   ICommonResponse,
   IStatisticPayload,
   IStatisticReponse,
-} from 'models';
+} from '@shared/models';
 import { Observable, map } from 'rxjs';
 
 @Injectable({

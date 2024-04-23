@@ -1,0 +1,49 @@
+<div class="p-5 overflow-hidden w-full h-full">
+  <div class="flex justify-center gap-4">
+    <mat-form-field class="col-span-4">
+      <mat-label>Odds</mat-label>
+      <mat-select name="odds" [value]="oddSelected" [(ngModel)]="oddSelected">
+        @for (odd of oddSelection; track odd.value) {
+        <mat-option [value]="odd.value">{{odd.label}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="col-span-4">
+      <mat-label class="text-sm">Number of recent matches</mat-label>
+      <input matInput placeholder="Default: 5" value="5" type="number">
+    </mat-form-field>
+  </div>
+  <div class=" grid gap-4 grid-cols-12" *ngIf="match && statistic">
+    <div class="col-span-6" *ngIf="statistic.home">
+      <mat-card class="p-2 relative">
+        <div class="absolute top-2 right-2">
+          <button mat-icon-button #tooltip="matTooltip" matTooltip="More details"
+            (click)="openStatisticDetailDialog(statistic.home)">
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+        </div>
+        <mat-card-header class="flex items-center justify-center gap-3 mb-3">
+          <img class="w-[35px] h-[35px] block" [src]="match.home.logo" [alt]="match.home.name" srcset="">
+          <span class="text-sm uppercase font-bold">{{ match.home.name }}</span>
+        </mat-card-header>
+        <c-line-chart [stats]="statistic.home" [odd]="oddSelected"></c-line-chart>
+      </mat-card>
+    </div>
+
+    <div class="col-span-6" *ngIf="statistic.away">
+      <mat-card class="p-2 relative">
+        <div class="absolute top-2 right-2">
+          <button mat-icon-button #tooltip="matTooltip" matTooltip="More details">
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+        </div>
+        <mat-card-header class="flex items-center justify-center gap-3 mb-3">
+          <img class="w-[35px] h-[35px] block" [src]="match.away.logo" [alt]="match.away.name" srcset="">
+          <span class="text-sm uppercase font-bold">{{ match.away.name }}</span>
+        </mat-card-header>
+        <c-line-chart [stats]="statistic.away" [odd]="oddSelected"></c-line-chart>
+      </mat-card>
+    </div>
+  </div>
+</div>

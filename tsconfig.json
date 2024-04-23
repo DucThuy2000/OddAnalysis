@@ -23,8 +23,7 @@
     "paths": {
       "services/*": ["app/services/*"],
       "components/*": ["app/components/*"],
-      "models": ["app/models/index"],
-      "helpers": ["app/helpers/index"]
+      "@shared/*": ["app/shared/*"]
     }
   },
   "angularCompilerOptions": {
