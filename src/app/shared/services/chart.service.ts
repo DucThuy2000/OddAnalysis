@@ -12,7 +12,7 @@ export class ChartService {
       result.opponents.push(opponent);
 
       switch (odds) {
-        case EOdds.CONNERS:
+        case EOdds.CORNERS:
           this.updateConnorsResult(result, cornerA, corner);
           break;
         case EOdds.CARDS:
@@ -33,7 +33,7 @@ export class ChartService {
       opponents: [],
       opponentCorner: [],
       personalCorner: [],
-      totalConners: [],
+      totalCorners: [],
       goalConceded: [],
       goalScored: [],
       totalGoals: [],
@@ -47,7 +47,7 @@ export class ChartService {
   ) => {
     result.opponentCorner?.push(cornerA);
     result.personalCorner?.push(corner);
-    result.totalConners?.push(corner + cornerA);
+    result.totalCorners?.push(corner + cornerA);
   };
 
   updateGoalsResult = (result: IMatchStat, ga: number, gf: number) => {

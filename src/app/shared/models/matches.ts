@@ -20,11 +20,11 @@ export interface IMatchStat {
   opponentCorner?: number[];
   personalCorner?: number[];
   totalGoals?: number[];
-  totalConners?: number[];
+  totalCorners?: number[];
 }
 
 export enum EOdds {
   GOALS = 'Goals',
-  CONNERS = 'Conners',
+  CORNERS = 'Corners',
   CARDS = 'Cards',
 }

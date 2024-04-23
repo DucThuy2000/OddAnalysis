@@ -44,8 +44,8 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   }
 
   createCornersChart(): void {
-    const { opponents, totalConners, personalCorner, opponentCorner } =
-      this.chartService.getLineChartDataset(EOdds.CONNERS, this.stats);
+    const { opponents, totalCorners, personalCorner, opponentCorner } =
+      this.chartService.getLineChartDataset(EOdds.CORNERS, this.stats);
     if (this.chart) this.chart.destroy();
     this.chart = new Chart(this.ctx, {
       type: 'line',
@@ -53,8 +53,8 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
         labels: opponents,
         datasets: [
           {
-            label: 'Total Conners',
-            data: totalConners,
+            label: 'Total Corners',
+            data: totalCorners,
             borderColor: 'blue',
             borderWidth: 1.5,
             fill: false,
@@ -67,7 +67,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
             fill: false,
           },
           {
-            label: `Opponent's conners`,
+            label: `Opponent's corners`,
             data: opponentCorner,
             borderColor: 'green',
             borderWidth: 1.5,
@@ -162,7 +162,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   generateLineChart(): void {
     if (!this.stats) return;
     switch (this.odd) {
-      case EOdds.CONNERS:
+      case EOdds.CORNERS:
         this.createCornersChart();
         break;
       case EOdds.CARDS:

@@ -5,6 +5,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { LineChartComponent } from '../line-chart/line-chart.component';
 import { ODDS } from '@shared/constants';
 import {
+  EOdds,
   IMatchDetail,
   IStatistic,
   IStatisticPayload,
@@ -42,25 +43,33 @@ import { StatisticDialogComponent } from '@shared/component/statistic-dialog/sta
 export class StatisticComponent implements OnChanges, OnDestroy, OnInit {
   private _destroyed$: Subject<void> = new Subject<void>();
   @Input() match!: IMatchDetail;
+  @Input() tabIndex: number = 0;
 
   statistic!: IStatisticReponse;
   oddSelection = ODDS;
-  oddSelected = this.oddSelection[0].value;
+  oddSelected!: EOdds;
 
   constructor(
     private statisticService: StatisticService,
     private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.setDefaultOdds();
+  }
 
   ngOnChanges(): void {
     if (this.match) this.getStatistic();
+    if (!this.tabIndex) this.setDefaultOdds();
   }
 
   ngOnDestroy(): void {
     this._destroyed$.next();
     this._destroyed$.complete();
+  }
+
+  setDefaultOdds(): void {
+    this.oddSelected = this.oddSelection[0].value;
   }
 
   getStatistic(): void {
