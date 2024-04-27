@@ -1,4 +1,15 @@
-<div class="border border-gray-100 shadow-xl">
+<div class="flex justify-center pt-4">
+  <mat-form-field>
+    <mat-label>Leagues</mat-label>
+    <mat-select name="odds" (selectionChange)="onChangeLeague($event.value)">
+      @for (league of leagues$ | async; track league.id) {
+      <mat-option [value]="league.id">{{league.name}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+@if((matches$ | async) && (matches$ | async)?.length) {
+<div class="border border-gray-100 shadow-xl lg:max-w-[768px] m-auto">
   @for(matches of matches$ | async; track matches.date) {
   <div class="px-5 py-2 border-gray-100 border-t border-b bg-[#f8f9fa] color-[#1f1f1f]">
     Match day {{ matches.date }}
@@ -24,3 +35,4 @@
   </div>
   }
 </div>
+}

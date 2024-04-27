@@ -1,21 +1,29 @@
 <div class="p-5 overflow-hidden w-full h-full">
-  <div class="flex justify-center gap-4">
-    <mat-form-field class="col-span-4">
+  <div class="grid grid-cols-12 gap-4" [formGroup]="form">
+    <mat-form-field class="lg:col-span-2">
       <mat-label>Odds</mat-label>
-      <mat-select name="odds" [value]="oddSelected" [(ngModel)]="oddSelected">
+      <mat-select name="odds" formControlName="odd">
         @for (odd of oddSelection; track odd.value) {
         <mat-option [value]="odd.value">{{odd.label}}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-span-4">
+    <mat-form-field class="lg:col-span-2">
       <mat-label class="text-sm">Number of recent matches</mat-label>
-      <input matInput placeholder="Default: 5" value="5" type="number">
+      <input matInput placeholder="Default: 5" formControlName="recentMatches" type="number"
+        (blur)="onBlurRecentMatches()">
+      @if (recentMatchFormControl?.hasError('max')) {
+      <mat-error>Enter less than 10 matches</mat-error>
+      }
+
+      @if (recentMatchFormControl?.hasError('min')) {
+      <mat-error>Enter more than 2 matches</mat-error>
+      }
     </mat-form-field>
   </div>
-  <div class=" grid gap-4 grid-cols-12" *ngIf="match && statistic">
-    <div class="col-span-6" *ngIf="statistic.home">
+  <div class="flex flex-col gap-6" *ngIf="match && statistic">
+    <ng-container *ngIf="statistic.home">
       <mat-card class="p-2 relative">
         <div class="absolute top-2 right-2">
           <button mat-icon-button #tooltip="matTooltip" matTooltip="More details"
@@ -29,9 +37,9 @@
         </mat-card-header>
         <c-line-chart [stats]="statistic.home" [odd]="oddSelected"></c-line-chart>
       </mat-card>
-    </div>
+    </ng-container>
 
-    <div class="col-span-6" *ngIf="statistic.away">
+    <ng-container *ngIf="statistic.away">
       <mat-card class="p-2 relative">
         <div class="absolute top-2 right-2">
           <button mat-icon-button #tooltip="matTooltip" matTooltip="More details">
@@ -44,6 +52,6 @@
         </mat-card-header>
         <c-line-chart [stats]="statistic.away" [odd]="oddSelected"></c-line-chart>
       </mat-card>
-    </div>
+    </ng-container>
   </div>
 </div>

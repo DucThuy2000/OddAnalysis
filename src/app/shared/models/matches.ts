@@ -8,7 +8,7 @@ export interface IMatch {
 export interface IMatchDetail {
   home: IClub;
   away: IClub;
-  datetime: string;
+  startTime: number;
   date: string;
   time: string;
 }

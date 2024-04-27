@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { env } from '../../../environment/environment';
+import { env } from '../../../environments/environment';
 import { IClub } from '@shared/models';
 import { Observable, map, tap } from 'rxjs';
 

@@ -1,12 +1,5 @@
-.chart-container {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1000px;
-  /* Adjust the max width of the container */
-}
-
 .chart {
-  max-width: 800px;
+  max-width: 100%;
   /* Adjust the max width of each chart */
   max-height: 400px;
   /* Adjust the max height of each chart */
