@@ -7,6 +7,7 @@ export interface IClub {
 export interface IStatisticPayload {
   homeId: number;
   awayId: number;
+  size: number;
 }
 
 export interface IStatisticFixtures {

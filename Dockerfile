@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install && npm run build
+RUN npm install && npm run build:prod
 
 # Stage 2: Serve app with Nginx
 FROM nginx:latest

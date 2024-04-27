@@ -6,13 +6,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { ClubsService } from '@shared/services/clubs.service';
 import { Subject } from 'rxjs';
 import { IMatchDetail } from '@shared/models';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatchesComponent } from './modules/matches/matches.component';
 import { StatisticComponent } from './modules/statistic/statistic.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { env } from 'environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +34,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject<void>();
-  loader: boolean = false;
+  loader: boolean = true;
   oddSelection = [
     { value: 'conners', label: 'Conners' },
     { value: 'goals', label: 'Goals' },
@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
   matchSelected!: IMatchDetail;
   tabIndex: number = 0;
   constructor(
-    private clubService: ClubsService,
     private loadingService: LoadingService,
     private cdr: ChangeDetectorRef
   ) {}
