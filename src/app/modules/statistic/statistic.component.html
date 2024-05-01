@@ -1,28 +1,31 @@
-<div class="p-5 overflow-hidden w-full h-full">
-  <div class="grid grid-cols-12 gap-4" [formGroup]="form">
-    <mat-form-field class="lg:col-span-2">
-      <mat-label>Odds</mat-label>
-      <mat-select name="odds" formControlName="odd">
-        @for (odd of oddSelection; track odd.value) {
-        <mat-option [value]="odd.value">{{odd.label}}</mat-option>
+<div class="flex gap-10 py-4">
+  <mat-card class="w-1/4 p-4 max-h-fit h-full">
+    <form class="flex flex-col gap-4" [formGroup]="form">
+      <div class="flex flex-col gap-2">
+        <mat-label>Number of matches</mat-label>
+        <input class="w-full border border-gray-400 rounded-lg py-1 px-4" formControlName="recentMatches" type="text"
+          placeholder="Enter number of matches">
+
+        @if (recentMatchFormControl?.hasError('max')) {
+        <shared-error-message message="Enter less than 10 matches" />
         }
-      </mat-select>
-    </mat-form-field>
 
-    <mat-form-field class="lg:col-span-2">
-      <mat-label class="text-sm">Number of recent matches</mat-label>
-      <input matInput placeholder="Default: 5" formControlName="recentMatches" type="number"
-        (blur)="onBlurRecentMatches()">
-      @if (recentMatchFormControl?.hasError('max')) {
-      <mat-error>Enter less than 10 matches</mat-error>
-      }
+        @if (recentMatchFormControl?.hasError('min')) {
+        <shared-error-message message="Enter less than 10 matches" />
+        }
+      </div>
 
-      @if (recentMatchFormControl?.hasError('min')) {
-      <mat-error>Enter more than 2 matches</mat-error>
-      }
-    </mat-form-field>
-  </div>
-  <div class="flex flex-col gap-6" *ngIf="match && statistic">
+      <div class="flex flex-col gap-2">
+        <mat-label>Odds</mat-label>
+        <mat-radio-group class="flex flex-col" formControlName="odd">
+          @for (odd of oddSelection; track odd.value) {
+          <mat-radio-button [value]="odd.value">{{odd.label}}</mat-radio-button>
+          }
+        </mat-radio-group>
+      </div>
+    </form>
+  </mat-card>
+  <div class="flex flex-col gap-6 w-3/4" *ngIf="statistic">
     <ng-container *ngIf="statistic.home">
       <mat-card class="p-2 relative">
         <div class="absolute top-2 right-2">
@@ -32,8 +35,8 @@
           </button>
         </div>
         <mat-card-header class="flex items-center justify-center gap-3 mb-3">
-          <img class="w-[35px] h-[35px] block" [src]="match.home.logo" [alt]="match.home.name" srcset="">
-          <span class="text-sm uppercase font-bold">{{ match.home.name }}</span>
+          <!-- <img class="w-[35px] h-[35px] block" [src]="match.home.logo" [alt]="home" srcset=""> -->
+          <!-- <span class="text-sm uppercase font-bold">{{ match.home.name }}</span> -->
         </mat-card-header>
         <c-line-chart [stats]="statistic.home" [odd]="oddSelected"></c-line-chart>
       </mat-card>
@@ -42,13 +45,14 @@
     <ng-container *ngIf="statistic.away">
       <mat-card class="p-2 relative">
         <div class="absolute top-2 right-2">
-          <button mat-icon-button #tooltip="matTooltip" matTooltip="More details">
+          <button mat-icon-button #tooltip="matTooltip" matTooltip="More details"
+            (click)="openStatisticDetailDialog(statistic.away)">
             <mat-icon>open_in_new</mat-icon>
           </button>
         </div>
         <mat-card-header class="flex items-center justify-center gap-3 mb-3">
-          <img class="w-[35px] h-[35px] block" [src]="match.away.logo" [alt]="match.away.name" srcset="">
-          <span class="text-sm uppercase font-bold">{{ match.away.name }}</span>
+          <!-- <img class="w-[35px] h-[35px] block" [src]="match.away.logo" [alt]="match.away.name" srcset=""> -->
+          <!-- <span class="text-sm uppercase font-bold">{{ match.away.name }}</span> -->
         </mat-card-header>
         <c-line-chart [stats]="statistic.away" [odd]="oddSelected"></c-line-chart>
       </mat-card>

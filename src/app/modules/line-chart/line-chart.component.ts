@@ -13,6 +13,11 @@ import { EOdds, IStatistic } from '@shared/models';
 import { ChartService } from '@shared/services/chart.service';
 Chart.register(...registerables);
 
+enum InputField {
+  ODD = 'odd',
+  STATS = 'stats',
+}
+
 @Component({
   selector: 'c-line-chart',
   standalone: true,
@@ -32,7 +37,13 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   constructor(private chartService: ChartService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['odd'] && !changes['odd'].firstChange) {
+    // Add firstChange condition to advoid the first time changes
+    // Only accpect the default values in the first time
+    if (changes[InputField.ODD] && !changes[InputField.ODD].firstChange) {
+      this.generateLineChart();
+    }
+
+    if (changes[InputField.STATS] && !changes[InputField.STATS].firstChange) {
       this.generateLineChart();
     }
   }
@@ -102,6 +113,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   }
 
   createGoalsChart(): void {
+    console.log('??');
     const { opponents, goalScored, goalConceded, totalGoals } =
       this.chartService.getLineChartDataset(EOdds.GOALS, this.stats);
     if (this.chart) this.chart.destroy();

@@ -5,17 +5,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { LineChartComponent } from '../line-chart/line-chart.component';
 import { ODDS } from '@shared/constants';
 import {
-  EOdds,
   IMatchDetail,
   IStatistic,
   IStatisticPayload,
   IStatisticReponse,
 } from '@shared/models';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { StatisticService } from '@shared/services/statistic.service';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -27,7 +25,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import { StatisticDialogComponent } from '@shared/component/statistic-dialog/statistic-dialog.component';
+import _ from 'lodash';
+import { ActivatedRoute, Router } from '@angular/router';
+import { STATISTIC_QUERY_PARAMS } from '@shared/constants/routes';
+import { ErrorMessage } from '@shared/component/error-message/error-message.component';
+import { InputNumber } from '@shared/component/form/input-number/input-number.component';
 
 const DEFAULT_MATHCES = 5;
 
@@ -51,15 +55,18 @@ enum FORM_FIELD {
     MatIconModule,
     MatTooltipModule,
     ReactiveFormsModule,
+    MatRadioModule,
+    ErrorMessage,
+    InputNumber,
   ],
   templateUrl: './statistic.component.html',
   styleUrl: './statistic.component.css',
 })
-export class StatisticComponent implements OnChanges, OnDestroy, OnInit {
+export class StatisticComponent implements OnDestroy, OnInit {
   private _destroyed$: Subject<void> = new Subject<void>();
-  @Input() match!: IMatchDetail;
-  @Input() tabIndex: number = 0;
 
+  // Router query params
+  queryParams!: STATISTIC_QUERY_PARAMS;
   form!: FormGroup;
   statistic!: IStatisticReponse;
   oddSelection = ODDS;
@@ -67,16 +74,15 @@ export class StatisticComponent implements OnChanges, OnDestroy, OnInit {
   constructor(
     private statisticService: StatisticService,
     private dialog: MatDialog,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.fetchQueryParams();
     this.initForm();
-  }
-
-  ngOnChanges(): void {
-    if (this.match) this.getStatistic();
-    if (!this.tabIndex) this.resetForm();
+    this.getStatistic();
+    this.watchNumberRecentMatchesChanges();
   }
 
   ngOnDestroy(): void {
@@ -92,6 +98,17 @@ export class StatisticComponent implements OnChanges, OnDestroy, OnInit {
   get recentMatchFormControl() {
     if (!this.form) return;
     return this.form.get(FORM_FIELD.RECENT_MATCHES);
+  }
+
+  fetchQueryParams(): void {
+    this.route.queryParams.subscribe((params) => {
+      if (params) {
+        this.queryParams = {
+          home: Number(params['home']),
+          away: Number(params['away']),
+        };
+      }
+    });
   }
 
   resetForm(): void {
@@ -112,25 +129,28 @@ export class StatisticComponent implements OnChanges, OnDestroy, OnInit {
     });
   }
 
-  onRecentMatchesChange(): void {
-    console.log(this.form.get);
-  }
-
   getStatistic(): void {
     const payload: IStatisticPayload = {
-      homeId: this.match.home.id,
-      awayId: this.match.away.id,
+      home: this.queryParams.home,
+      away: this.queryParams.away,
       size: this.recentMatchFormControl?.value || DEFAULT_MATHCES,
     };
 
     this.statisticService
       .getStatistic(payload)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((res) => (this.statistic = res));
+      .subscribe((stats) => (this.statistic = stats));
   }
 
-  onBlurRecentMatches(): void {
-    if (!this.recentMatchFormControl?.errors) this.getStatistic();
+  watchNumberRecentMatchesChanges(): void {
+    if (!this.recentMatchFormControl) return;
+    this.recentMatchFormControl.valueChanges
+      .pipe(takeUntil(this._destroyed$), debounceTime(500))
+      .subscribe((value) => {
+        if (this.recentMatchFormControl?.errors) return;
+        // Call statistic API for new valid recent matches input value
+        this.getStatistic();
+      });
   }
 
   openStatisticDetailDialog(stat: IStatistic): void {

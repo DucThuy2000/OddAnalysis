@@ -17,10 +17,13 @@ export class StatisticService {
 
   getStatistic(payload: IStatisticPayload): Observable<IStatisticReponse> {
     const url = `${env.api}/statistic`;
-    const params = { home: payload.homeId, away: payload.awayId };
 
     return this.http
-      .get<ICommonResponse<IStatisticReponse>>(url, { params })
+      .get<ICommonResponse<IStatisticReponse>>(url, {
+        params: {
+          ...payload,
+        },
+      })
       .pipe(
         map((res) => (res.message === EResponseMessage.OK ? res.data : {}))
       );

@@ -2,28 +2,41 @@ export interface IClub {
   id: number;
   name: string;
   logo: string;
+  codeName: string;
 }
 
 export interface IStatisticPayload {
-  homeId: number;
-  awayId: number;
+  home: number;
+  away: number;
   size: number;
 }
 
-export interface IStatisticFixtures {
-  opponent: string;
-  timestamp: number;
+export interface IStatisticDetails {
+  shotOnGoal: number;
+  shotOnGoalA: number;
+  offside: number;
+  offsideA: number;
+  yellowCard: number;
+  yellowCardA: number;
+  throwIn: number;
+  throwInA: number;
   gf: number;
   ga: number;
-  c: number;
-  ca: number;
   corner: number;
   cornerA: number;
 }
 
+export interface IStatisticFixtures {
+  matchId: string;
+  fullTime: IStatisticDetails;
+  firstHalf: IStatisticDetails;
+  secondHalf: IStatisticDetails;
+  opponent: IClub;
+}
+
 export interface IStatistic {
   name: string;
-  previousFixtures: IStatisticFixtures[];
+  previousStatistic: IStatisticFixtures[];
   avgCorner?: number;
   avgCornerA?: number;
   avgCornerTotal?: number;

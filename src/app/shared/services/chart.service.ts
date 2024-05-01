@@ -4,12 +4,12 @@ import { EOdds, IMatchStat, IStatistic } from '@shared/models';
 @Injectable({ providedIn: 'root' })
 export class ChartService {
   getLineChartDataset = (odds: EOdds, stats: IStatistic): IMatchStat => {
-    const { previousFixtures } = stats;
+    const { previousStatistic } = stats;
     const result: IMatchStat = this.initializeResult();
 
-    for (const fixture of previousFixtures) {
-      const { opponent, corner, cornerA, ga, gf } = fixture;
-      result.opponents.push(opponent);
+    for (const fixture of previousStatistic) {
+      const { corner, cornerA, ga, gf } = fixture.fullTime;
+      result.opponents.push(fixture.opponent.codeName);
 
       switch (odds) {
         case EOdds.CORNERS:

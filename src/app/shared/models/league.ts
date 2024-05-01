@@ -1,4 +1,4 @@
 export interface ILeague {
-  id: number;
+  id: string;
   name: string;
 }

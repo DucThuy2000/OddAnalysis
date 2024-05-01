@@ -23,7 +23,7 @@ export class MatcheService {
   convertMatchData(matches: IMatchDetail[]): IMatch[] {
     if (!matches.length) return [];
     const convertedMatches = matches.map(this.convertDate);
-    console.log(convertedMatches, 'mathces');
+
     const uniqDates = Array.from(new Set(convertedMatches.map((m) => m.date)));
 
     return uniqDates.map((date) => ({

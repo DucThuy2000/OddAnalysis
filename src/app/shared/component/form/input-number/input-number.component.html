@@ -1,0 +1,7 @@
+<div class="flex flex-col gap-1">
+  @if (label) {
+  <label class="text-base">{{ label }}</label>
+  }
+  <input #input class="w-full border border-gray-400 rounded-lg py-1 px-4" [class]="inputClass" type="number"
+    [placeholder]="placeholder" (input)="onInputChange($event)" (blur)="onBlur()">
+</div>
