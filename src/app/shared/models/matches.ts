@@ -13,7 +13,7 @@ export interface IMatchDetail {
   time: string;
 }
 
-export interface IMatchStat {
+export interface IMatchChartStat {
   opponents: string[];
   goalScored?: number[];
   goalConceded?: number[];
@@ -21,10 +21,21 @@ export interface IMatchStat {
   personalCorner?: number[];
   totalGoals?: number[];
   totalCorners?: number[];
+  yellowCard?: number[];
+  yellowCardA?: number[];
+  totalYellowCard?: number[];
+  throwIn?: number[];
+  throwInA?: number[];
+  totalThrowIn?: number[];
+  offside?: number[];
+  offsideA?: number[];
+  totalOffside?: number[];
 }
 
 export enum EOdds {
   GOALS = 'Goals',
   CORNERS = 'Corners',
-  CARDS = 'Cards',
+  YELLOW_CARDS = 'Yello cards',
+  THROW_IN = 'Throw in',
+  OFF_SIDE = 'Off side',
 }

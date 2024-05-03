@@ -37,6 +37,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   constructor(private chartService: ChartService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.stats, 'stats');
     // Add firstChange condition to advoid the first time changes
     // Only accpect the default values in the first time
     if (changes[InputField.ODD] && !changes[InputField.ODD].firstChange) {
@@ -54,121 +55,82 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
     this.generateLineChart();
   }
 
-  createCornersChart(): void {
-    const { opponents, totalCorners, personalCorner, opponentCorner } =
-      this.chartService.getLineChartDataset(EOdds.CORNERS, this.stats);
+  refreshChart() {
     if (this.chart) this.chart.destroy();
-    this.chart = new Chart(this.ctx, {
-      type: 'line',
-      data: {
-        labels: opponents,
-        datasets: [
-          {
-            label: 'Total Corners',
-            data: totalCorners,
-            borderColor: 'blue',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: `${this.stats.name}'s corners`,
-            data: personalCorner,
-            borderColor: 'green',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: `Opponent's corners`,
-            data: opponentCorner,
-            borderColor: 'red',
-            borderWidth: 1.5,
-            fill: false,
-          },
-        ],
-      },
-      options: {
-        layout: {
-          padding: {
-            left: 20,
-          },
-        },
-        scales: {
-          y: {
-            max: 20,
-            min: 0,
-            ticks: {
-              stepSize: 2,
-            },
-          },
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: `${this.stats.name} last ${this.stats.totalMatch} mach EPL`,
-            position: 'bottom', // Display title below the chart
-          },
-        },
-      },
-    });
+  }
+
+  createCornersChart(): void {
+    const matchStats = this.chartService.getLineChartDataset(
+      EOdds.CORNERS,
+      this.stats
+    );
+    this.refreshChart();
+
+    this.chart = this.chartService.getConnersChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
   }
 
   createGoalsChart(): void {
-    console.log('??');
-    const { opponents, goalScored, goalConceded, totalGoals } =
-      this.chartService.getLineChartDataset(EOdds.GOALS, this.stats);
-    if (this.chart) this.chart.destroy();
-    this.chart = new Chart(this.ctx, {
-      type: 'line',
-      data: {
-        labels: opponents,
-        datasets: [
-          {
-            label: 'Total Goals',
-            data: totalGoals,
-            borderColor: 'blue',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: 'Goals Scored',
-            data: goalScored,
-            borderColor: 'green',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: 'Goals Conceded',
-            data: goalConceded,
-            borderColor: 'red',
-            borderWidth: 1.5,
-            fill: false,
-          },
-        ],
-      },
-      options: {
-        layout: {
-          padding: {
-            left: 20,
-          },
-        },
-        scales: {
-          y: {
-            max: 8,
-            min: 0,
-            ticks: {
-              stepSize: 1,
-            },
-          },
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: `${this.stats.name} last 5 mach EPL`,
-            position: 'bottom', // Display title below the chart
-          },
-        },
-      },
-    });
+    const matchStats = this.chartService.getLineChartDataset(
+      EOdds.GOALS,
+      this.stats
+    );
+
+    this.refreshChart();
+
+    this.chart = this.chartService.getGoalsChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createYellowCardsChart(): void {
+    const matchStats = this.chartService.getLineChartDataset(
+      EOdds.YELLOW_CARDS,
+      this.stats
+    );
+
+    this.refreshChart();
+
+    this.chart = this.chartService.getYellowCardsChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createThrowInChart(): void {
+    const matchStats = this.chartService.getLineChartDataset(
+      EOdds.THROW_IN,
+      this.stats
+    );
+
+    this.refreshChart();
+
+    this.chart = this.chartService.getThrowInChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createOffsideChart(): void {
+    const matchStats = this.chartService.getLineChartDataset(
+      EOdds.OFF_SIDE,
+      this.stats
+    );
+
+    this.refreshChart();
+
+    this.chart = this.chartService.getOffsideChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
   }
 
   generateLineChart(): void {
@@ -177,7 +139,14 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
       case EOdds.CORNERS:
         this.createCornersChart();
         break;
-      case EOdds.CARDS:
+      case EOdds.YELLOW_CARDS:
+        this.createYellowCardsChart();
+        break;
+      case EOdds.THROW_IN:
+        this.createThrowInChart();
+        break;
+      case EOdds.OFF_SIDE:
+        this.createOffsideChart();
         break;
       case EOdds.GOALS:
       default:
