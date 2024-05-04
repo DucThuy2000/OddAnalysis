@@ -1,25 +1,27 @@
-<div class="flex gap-10 py-4">
+<div class="flex gap-8 py-4">
   <mat-card class="w-1/4 p-4 max-h-fit h-full">
     <form class="flex flex-col gap-4" [formGroup]="form">
-      <div class="flex flex-col gap-2">
-        <mat-label>Number of matches</mat-label>
-        <input class="w-full border border-gray-400 rounded-lg py-1 px-4" formControlName="recentMatches" type="text"
-          placeholder="Enter number of matches">
-
-        @if (recentMatchFormControl?.hasError('max')) {
-        <shared-error-message message="Enter less than 10 matches" />
-        }
-
-        @if (recentMatchFormControl?.hasError('min')) {
-        <shared-error-message message="Enter less than 10 matches" />
-        }
+      <div class="flex flex-col">
+        <mat-label>Recents matches: {{ recentMatchesValue }}</mat-label>
+        <mat-slider class="example-margin" [max]="10" [min]="2" [step]="1" [discrete]="true" [showTickMarks]="true">
+          <input matSliderThumb formControlName="recentMatches" #slider>
+        </mat-slider>
       </div>
 
       <div class="flex flex-col gap-2">
-        <mat-label>Odds</mat-label>
+        <mat-label>Types</mat-label>
         <mat-radio-group class="flex flex-col" formControlName="odd">
           @for (odd of oddSelection; track odd.value) {
-          <mat-radio-button [value]="odd.value">{{odd.label}}</mat-radio-button>
+          <mat-radio-button [value]="odd.value" color="primary">{{odd.label}}</mat-radio-button>
+          }
+        </mat-radio-group>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <mat-label>Timeline</mat-label>
+        <mat-radio-group class="flex gap-2" formControlName="timeline">
+          @for (timeline of timelineRadio; track timeline.value) {
+          <mat-radio-button [value]="timeline.value" color="primary">{{timeline.label}}</mat-radio-button>
           }
         </mat-radio-group>
       </div>
@@ -35,10 +37,10 @@
           </button>
         </div>
         <mat-card-header class="flex items-center justify-center gap-3 mb-3">
-          <!-- <img class="w-[35px] h-[35px] block" [src]="match.home.logo" [alt]="home" srcset=""> -->
-          <!-- <span class="text-sm uppercase font-bold">{{ match.home.name }}</span> -->
+          <img class="w-[35px] h-[35px] block" [src]="statistic.home.logo" [alt]="statistic.home.name" srcset="">
+          <span class="text-sm uppercase font-bold">{{ statistic.home.name }}</span>
         </mat-card-header>
-        <c-line-chart [stats]="statistic.home" [odd]="oddSelected"></c-line-chart>
+        <c-line-chart [stats]="statistic.home" [types]="oddSelected" [timeline]="timelineSelected"></c-line-chart>
       </mat-card>
     </ng-container>
 
@@ -51,10 +53,10 @@
           </button>
         </div>
         <mat-card-header class="flex items-center justify-center gap-3 mb-3">
-          <!-- <img class="w-[35px] h-[35px] block" [src]="match.away.logo" [alt]="match.away.name" srcset=""> -->
-          <!-- <span class="text-sm uppercase font-bold">{{ match.away.name }}</span> -->
+          <img class="w-[35px] h-[35px] block" [src]="statistic.away.logo" [alt]="statistic.away.name" srcset="">
+          <span class="text-sm uppercase font-bold">{{ statistic.away.name }}</span>
         </mat-card-header>
-        <c-line-chart [stats]="statistic.away" [odd]="oddSelected"></c-line-chart>
+        <c-line-chart [stats]="statistic.away" [types]="oddSelected" [timeline]="timelineSelected"></c-line-chart>
       </mat-card>
     </ng-container>
   </div>

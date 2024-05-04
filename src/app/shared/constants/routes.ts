@@ -12,4 +12,5 @@ export const ROUTE_LINK = {
 export interface STATISTIC_QUERY_PARAMS {
   home: number;
   away: number;
+  league?: string;
 }

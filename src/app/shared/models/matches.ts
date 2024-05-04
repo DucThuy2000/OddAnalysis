@@ -13,18 +13,24 @@ export interface IMatchDetail {
   time: string;
 }
 
-export interface IMatchStat {
-  opponents: string[];
+export interface IMatchChartStat {
+  opponents: any;
   goalScored?: number[];
   goalConceded?: number[];
   opponentCorner?: number[];
   personalCorner?: number[];
   totalGoals?: number[];
   totalCorners?: number[];
-}
-
-export enum EOdds {
-  GOALS = 'Goals',
-  CORNERS = 'Corners',
-  CARDS = 'Cards',
+  yellowCard?: number[];
+  yellowCardA?: number[];
+  totalYellowCard?: number[];
+  throwIn?: number[];
+  throwInA?: number[];
+  totalThrowIn?: number[];
+  offside?: number[];
+  offsideA?: number[];
+  totalOffside?: number[];
+  shotOnGoal?: number[];
+  shotOnGoalA?: number[];
+  totalShots?: number[];
 }

@@ -9,13 +9,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { EOdds, IStatistic } from '@shared/models';
+import { EOdds, ETimelineMatch, IStatistic } from '@shared/models';
 import { ChartService } from '@shared/services/chart.service';
 Chart.register(...registerables);
 
 enum InputField {
-  ODD = 'odd',
+  ODD = 'types',
   STATS = 'stats',
+  TIMELINE = 'timeline',
 }
 
 @Component({
@@ -29,7 +30,9 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   @ViewChild('chart', { static: false })
   chartRef!: ElementRef<HTMLCanvasElement>;
   @Input() stats!: IStatistic;
-  @Input() odd: EOdds = EOdds.GOALS;
+  @Input() types: EOdds = EOdds.GOALS;
+  @Input() timeline: ETimelineMatch = ETimelineMatch.FULL_TIME;
+
   canvas: any;
   ctx: any;
   chart!: any;
@@ -39,13 +42,17 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // Add firstChange condition to advoid the first time changes
     // Only accpect the default values in the first time
-    if (changes[InputField.ODD] && !changes[InputField.ODD].firstChange) {
+    if (changes[InputField.ODD] && !changes[InputField.ODD].firstChange)
       this.generateLineChart();
-    }
 
-    if (changes[InputField.STATS] && !changes[InputField.STATS].firstChange) {
+    if (changes[InputField.STATS] && !changes[InputField.STATS].firstChange)
       this.generateLineChart();
-    }
+
+    if (
+      changes[InputField.TIMELINE] &&
+      !changes[InputField.TIMELINE].firstChange
+    )
+      this.generateLineChart();
   }
 
   ngAfterViewInit(): void {
@@ -54,130 +61,101 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
     this.generateLineChart();
   }
 
-  createCornersChart(): void {
-    const { opponents, totalCorners, personalCorner, opponentCorner } =
-      this.chartService.getLineChartDataset(EOdds.CORNERS, this.stats);
+  refreshChart() {
     if (this.chart) this.chart.destroy();
-    this.chart = new Chart(this.ctx, {
-      type: 'line',
-      data: {
-        labels: opponents,
-        datasets: [
-          {
-            label: 'Total Corners',
-            data: totalCorners,
-            borderColor: 'blue',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: `${this.stats.name}'s corners`,
-            data: personalCorner,
-            borderColor: 'green',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: `Opponent's corners`,
-            data: opponentCorner,
-            borderColor: 'red',
-            borderWidth: 1.5,
-            fill: false,
-          },
-        ],
-      },
-      options: {
-        layout: {
-          padding: {
-            left: 20,
-          },
-        },
-        scales: {
-          y: {
-            max: 20,
-            min: 0,
-            ticks: {
-              stepSize: 2,
-            },
-          },
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: `${this.stats.name} last ${this.stats.totalMatch} mach EPL`,
-            position: 'bottom', // Display title below the chart
-          },
-        },
-      },
-    });
+  }
+
+  getMatchStats() {
+    return this.chartService.getLineChartDataset(
+      this.types,
+      this.stats,
+      this.timeline
+    );
+  }
+
+  createCornersChart(): void {
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getConnersChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
   }
 
   createGoalsChart(): void {
-    console.log('??');
-    const { opponents, goalScored, goalConceded, totalGoals } =
-      this.chartService.getLineChartDataset(EOdds.GOALS, this.stats);
-    if (this.chart) this.chart.destroy();
-    this.chart = new Chart(this.ctx, {
-      type: 'line',
-      data: {
-        labels: opponents,
-        datasets: [
-          {
-            label: 'Total Goals',
-            data: totalGoals,
-            borderColor: 'blue',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: 'Goals Scored',
-            data: goalScored,
-            borderColor: 'green',
-            borderWidth: 1.5,
-            fill: false,
-          },
-          {
-            label: 'Goals Conceded',
-            data: goalConceded,
-            borderColor: 'red',
-            borderWidth: 1.5,
-            fill: false,
-          },
-        ],
-      },
-      options: {
-        layout: {
-          padding: {
-            left: 20,
-          },
-        },
-        scales: {
-          y: {
-            max: 8,
-            min: 0,
-            ticks: {
-              stepSize: 1,
-            },
-          },
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: `${this.stats.name} last 5 mach EPL`,
-            position: 'bottom', // Display title below the chart
-          },
-        },
-      },
-    });
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getGoalsChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createYellowCardsChart(): void {
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getYellowCardsChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createThrowInChart(): void {
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getThrowInChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createOffsideChart(): void {
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getOffsideChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
+  createShotsOnTargetChart(): void {
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getShotOnTargetChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
   }
 
   generateLineChart(): void {
     if (!this.stats) return;
-    switch (this.odd) {
+    switch (this.types) {
       case EOdds.CORNERS:
         this.createCornersChart();
         break;
-      case EOdds.CARDS:
+      case EOdds.YELLOW_CARDS:
+        this.createYellowCardsChart();
+        break;
+      case EOdds.THROW_IN:
+        this.createThrowInChart();
+        break;
+      case EOdds.OFF_SIDE:
+        this.createOffsideChart();
+        break;
+      case EOdds.SHOTS_ON_TARGET:
+        this.createShotsOnTargetChart();
         break;
       case EOdds.GOALS:
       default:
