@@ -9,13 +9,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { EOdds, IStatistic } from '@shared/models';
+import { EOdds, ETimelineMatch, IStatistic } from '@shared/models';
 import { ChartService } from '@shared/services/chart.service';
 Chart.register(...registerables);
 
 enum InputField {
-  ODD = 'odd',
+  ODD = 'types',
   STATS = 'stats',
+  TIMELINE = 'timeline',
 }
 
 @Component({
@@ -29,7 +30,9 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   @ViewChild('chart', { static: false })
   chartRef!: ElementRef<HTMLCanvasElement>;
   @Input() stats!: IStatistic;
-  @Input() odd: EOdds = EOdds.GOALS;
+  @Input() types: EOdds = EOdds.GOALS;
+  @Input() timeline: ETimelineMatch = ETimelineMatch.FULL_TIME;
+
   canvas: any;
   ctx: any;
   chart!: any;
@@ -37,16 +40,19 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   constructor(private chartService: ChartService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.stats, 'stats');
     // Add firstChange condition to advoid the first time changes
     // Only accpect the default values in the first time
-    if (changes[InputField.ODD] && !changes[InputField.ODD].firstChange) {
+    if (changes[InputField.ODD] && !changes[InputField.ODD].firstChange)
       this.generateLineChart();
-    }
 
-    if (changes[InputField.STATS] && !changes[InputField.STATS].firstChange) {
+    if (changes[InputField.STATS] && !changes[InputField.STATS].firstChange)
       this.generateLineChart();
-    }
+
+    if (
+      changes[InputField.TIMELINE] &&
+      !changes[InputField.TIMELINE].firstChange
+    )
+      this.generateLineChart();
   }
 
   ngAfterViewInit(): void {
@@ -59,11 +65,16 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
     if (this.chart) this.chart.destroy();
   }
 
-  createCornersChart(): void {
-    const matchStats = this.chartService.getLineChartDataset(
-      EOdds.CORNERS,
-      this.stats
+  getMatchStats() {
+    return this.chartService.getLineChartDataset(
+      this.types,
+      this.stats,
+      this.timeline
     );
+  }
+
+  createCornersChart(): void {
+    const matchStats = this.getMatchStats();
     this.refreshChart();
 
     this.chart = this.chartService.getConnersChart(
@@ -74,11 +85,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   }
 
   createGoalsChart(): void {
-    const matchStats = this.chartService.getLineChartDataset(
-      EOdds.GOALS,
-      this.stats
-    );
-
+    const matchStats = this.getMatchStats();
     this.refreshChart();
 
     this.chart = this.chartService.getGoalsChart(
@@ -89,11 +96,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   }
 
   createYellowCardsChart(): void {
-    const matchStats = this.chartService.getLineChartDataset(
-      EOdds.YELLOW_CARDS,
-      this.stats
-    );
-
+    const matchStats = this.getMatchStats();
     this.refreshChart();
 
     this.chart = this.chartService.getYellowCardsChart(
@@ -104,11 +107,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   }
 
   createThrowInChart(): void {
-    const matchStats = this.chartService.getLineChartDataset(
-      EOdds.THROW_IN,
-      this.stats
-    );
-
+    const matchStats = this.getMatchStats();
     this.refreshChart();
 
     this.chart = this.chartService.getThrowInChart(
@@ -119,11 +118,7 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
   }
 
   createOffsideChart(): void {
-    const matchStats = this.chartService.getLineChartDataset(
-      EOdds.OFF_SIDE,
-      this.stats
-    );
-
+    const matchStats = this.getMatchStats();
     this.refreshChart();
 
     this.chart = this.chartService.getOffsideChart(
@@ -133,9 +128,20 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
     );
   }
 
+  createShotsOnTargetChart(): void {
+    const matchStats = this.getMatchStats();
+    this.refreshChart();
+
+    this.chart = this.chartService.getShotOnTargetChart(
+      this.ctx,
+      this.stats,
+      matchStats
+    );
+  }
+
   generateLineChart(): void {
     if (!this.stats) return;
-    switch (this.odd) {
+    switch (this.types) {
       case EOdds.CORNERS:
         this.createCornersChart();
         break;
@@ -147,6 +153,9 @@ export class LineChartComponent implements AfterViewInit, OnChanges {
         break;
       case EOdds.OFF_SIDE:
         this.createOffsideChart();
+        break;
+      case EOdds.SHOTS_ON_TARGET:
+        this.createShotsOnTargetChart();
         break;
       case EOdds.GOALS:
       default:

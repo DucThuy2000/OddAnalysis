@@ -1,14 +1,43 @@
 import { Injectable } from '@angular/core';
-import { EOdds, IMatchChartStat, IStatistic } from '@shared/models';
-import { Chart, ChartDataset } from 'chart.js';
+import { ActivatedRoute } from '@angular/router';
+import {
+  EOdds,
+  EStatisticQueryParams,
+  ETimelineMatch,
+  IMatchChartStat,
+  IStatistic,
+} from '@shared/models';
+import { Chart } from 'chart.js';
+import _ from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class ChartService {
-  getLineChartDataset = (odds: EOdds, stats: IStatistic): IMatchChartStat => {
+  private leagueName: string = '';
+
+  constructor(private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.queryParams.subscribe((params) => {
+      if (params[EStatisticQueryParams.LEAGUE])
+        this.transformLeagueName(params[EStatisticQueryParams.LEAGUE]);
+    });
+  }
+
+  transformLeagueName(name: string): void {
+    const capitialized = name.charAt(0).toUpperCase();
+    const sliced = name.slice(1);
+
+    this.leagueName = capitialized + sliced;
+  }
+
+  getLineChartDataset = (
+    odds: EOdds,
+    stats: IStatistic,
+    timeline: ETimelineMatch
+  ): IMatchChartStat => {
     const { previousStatistic } = stats;
+    const matchReversed = _.cloneDeep(previousStatistic).reverse();
     const result: IMatchChartStat = this.initializeResult();
 
-    for (const fixture of previousStatistic) {
+    for (const fixture of matchReversed) {
       const {
         corner,
         cornerA,
@@ -20,8 +49,11 @@ export class ChartService {
         yellowCardA,
         offside,
         offsideA,
-      } = fixture.fullTime;
-      result.opponents.push(fixture.opponent.codeName);
+        shotOnGoal,
+        shotOnGoalA,
+      } = fixture[timeline];
+      const nameSplited = fixture.opponent.name.split(' ');
+      result.opponents.push(nameSplited);
 
       switch (odds) {
         case EOdds.CORNERS:
@@ -34,7 +66,10 @@ export class ChartService {
           this.updateThrowInResult(result, throwInA, throwIn);
           break;
         case EOdds.OFF_SIDE:
-          this.updateOffSideResult(result, offside, offsideA);
+          this.updateOffSideResult(result, offsideA, offside);
+          break;
+        case EOdds.SHOTS_ON_TARGET:
+          this.updateShotsOnTargetResult(result, shotOnGoalA, shotOnGoal);
           break;
         case EOdds.GOALS:
         default:
@@ -42,7 +77,6 @@ export class ChartService {
           break;
       }
     }
-
     return result;
   };
 
@@ -64,6 +98,9 @@ export class ChartService {
       offside: [],
       offsideA: [],
       totalOffside: [],
+      shotOnGoal: [],
+      shotOnGoalA: [],
+      totalShots: [],
     };
   };
 
@@ -85,8 +122,8 @@ export class ChartService {
 
   updateYellowCardsResult = (
     result: IMatchChartStat,
-    yellowCard: number,
-    yellowCardA: number
+    yellowCardA: number,
+    yellowCard: number
   ) => {
     result.yellowCardA?.push(yellowCardA);
     result.yellowCard?.push(yellowCard);
@@ -111,6 +148,16 @@ export class ChartService {
     result.offsideA?.push(offsideA);
     result.offside?.push(offside);
     result.totalOffside?.push(offsideA + offside);
+  };
+
+  updateShotsOnTargetResult = (
+    result: IMatchChartStat,
+    shotOnGoalA: number,
+    shotOnGoal: number
+  ) => {
+    result.shotOnGoalA?.push(shotOnGoalA);
+    result.shotOnGoal?.push(shotOnGoal);
+    result.totalShots?.push(shotOnGoalA + shotOnGoal);
   };
 
   getMaxYForLineChart(total: number) {
@@ -147,7 +194,7 @@ export class ChartService {
         plugins: {
           title: {
             display: true,
-            text: `${stats.name} last 5 mach EPL`,
+            text: `${stats.name} last 5 matches in ${this.leagueName}`,
             position: 'bottom',
           },
         },
@@ -328,6 +375,45 @@ export class ChartService {
       {
         label: `Opponent's offside`,
         data: matchStats.offsideA,
+        borderColor: 'red',
+        borderWidth: 1,
+        fill: false,
+      },
+    ];
+    const chartConfig = this.getConfigLineChart(
+      stats,
+      datasets,
+      opponents,
+      maxY
+    );
+    return new Chart(ctx, chartConfig);
+  }
+
+  getShotOnTargetChart(
+    ctx: any,
+    stats: IStatistic,
+    matchStats: IMatchChartStat
+  ) {
+    const { opponents } = matchStats;
+    const maxY = this.getMaxYForLineChart(Math.max(...matchStats.totalShots!));
+    const datasets = [
+      {
+        label: 'Total shots on target',
+        data: matchStats.totalShots,
+        borderColor: 'blue',
+        borderWidth: 2,
+        fill: false,
+      },
+      {
+        label: `${stats.name}'s shots on target`,
+        data: matchStats.shotOnGoal,
+        borderColor: 'green',
+        borderWidth: 1,
+        fill: false,
+      },
+      {
+        label: `Opponent's shots on target`,
+        data: matchStats.shotOnGoalA,
         borderColor: 'red',
         borderWidth: 1,
         fill: false,

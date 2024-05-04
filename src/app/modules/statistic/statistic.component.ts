@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { LineChartComponent } from '../line-chart/line-chart.component';
-import { ODDS } from '@shared/constants';
+import { ODDS, TIMELINE } from '@shared/constants';
 import {
-  IMatchDetail,
+  EStatisticQueryParams,
+  ETimelineMatch,
   IStatistic,
   IStatisticPayload,
   IStatisticReponse,
@@ -26,9 +27,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSliderModule } from '@angular/material/slider';
 import { StatisticDialogComponent } from '@shared/component/statistic-dialog/statistic-dialog.component';
 import _ from 'lodash';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { STATISTIC_QUERY_PARAMS } from '@shared/constants/routes';
 import { ErrorMessage } from '@shared/component/error-message/error-message.component';
 import { InputNumber } from '@shared/component/form/input-number/input-number.component';
@@ -38,6 +40,7 @@ const DEFAULT_MATHCES = 5;
 enum FORM_FIELD {
   ODD = 'odd',
   RECENT_MATCHES = 'recentMatches',
+  TIME_LINE = 'timeline',
 }
 
 @Component({
@@ -58,6 +61,7 @@ enum FORM_FIELD {
     MatRadioModule,
     ErrorMessage,
     InputNumber,
+    MatSliderModule,
   ],
   templateUrl: './statistic.component.html',
   styleUrl: './statistic.component.css',
@@ -70,6 +74,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
   form!: FormGroup;
   statistic!: IStatisticReponse;
   oddSelection = ODDS;
+  timelineRadio = TIMELINE;
 
   constructor(
     private statisticService: StatisticService,
@@ -95,6 +100,16 @@ export class StatisticComponent implements OnDestroy, OnInit {
     return this.form.get([FORM_FIELD.ODD])?.value;
   }
 
+  get timelineSelected() {
+    if (!this.form.get([FORM_FIELD.TIME_LINE])) return '';
+    return this.form.get([FORM_FIELD.TIME_LINE])?.value;
+  }
+
+  get recentMatchesValue() {
+    if (!this.form.get([FORM_FIELD.RECENT_MATCHES])) return '';
+    return this.form.get([FORM_FIELD.RECENT_MATCHES])?.value;
+  }
+
   get recentMatchFormControl() {
     if (!this.form) return;
     return this.form.get(FORM_FIELD.RECENT_MATCHES);
@@ -104,8 +119,8 @@ export class StatisticComponent implements OnDestroy, OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params) {
         this.queryParams = {
-          home: Number(params['home']),
-          away: Number(params['away']),
+          home: Number(params[EStatisticQueryParams.HOME]),
+          away: Number(params[EStatisticQueryParams.AWAY]),
         };
       }
     });
@@ -116,6 +131,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
     this.form.reset({
       [FORM_FIELD.ODD]: this.oddSelection[0].value,
       [FORM_FIELD.RECENT_MATCHES]: DEFAULT_MATHCES,
+      [FORM_FIELD.TIME_LINE]: ETimelineMatch.FULL_TIME,
     });
   }
 
@@ -126,6 +142,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
         DEFAULT_MATHCES,
         [Validators.max(10), Validators.min(2)],
       ],
+      [FORM_FIELD.TIME_LINE]: [ETimelineMatch.FULL_TIME],
     });
   }
 

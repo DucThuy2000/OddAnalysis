@@ -75,6 +75,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
   onClickMatch(match: IMatchDetail): void {
     if (!match) return;
     const queryParams: STATISTIC_QUERY_PARAMS = {
+      league: this.leagueSelected.name.toLowerCase(),
       home: match.home.id,
       away: match.away.id,
     };
