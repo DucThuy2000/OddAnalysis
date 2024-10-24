@@ -24,6 +24,8 @@
       "services/*": ["app/services/*"],
       "components/*": ["app/components/*"],
       "@shared/*": ["app/shared/*"],
+      "@core/*": ["app/core/*"],
+      "@features/*": ["app/features/*"],
       "environments/*": ["environments/*"]
     }
   },

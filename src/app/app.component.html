@@ -1,7 +1,14 @@
-<div class="loading-container" *ngIf="loader">
+<div
+  class="loading-container"
+  *ngIf="loader"
+>
   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 </div>
-<layout-header></layout-header>
-<div class="container mx-auto pt-[60px] pb-5 h-full">
-  <router-outlet></router-outlet>
+<div class="antialiased">
+  <layout-header />
+  <div class="container mx-auto py-6 lg:py-10">
+    <div class="flex flex-col px-4 md:px-0">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

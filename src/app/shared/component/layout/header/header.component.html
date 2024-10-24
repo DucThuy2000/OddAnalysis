@@ -1,7 +1,16 @@
-<div class="fixed top-0 left-0 shadow-md z-[1000] bg-blue-500 w-full">
+<div class="sticky top-0 shadow-md z-10 bg-blue-500 w-full">
   <div class="container mx-auto min-h-[60px] text-white py-4">
-    <div class="flex justify-between">
-      <a [routerLink]="['/']">logo</a>
+    <div class="flex items-center justify-between">
+      <a [routerLink]="['/']">
+        <img
+          nz-image
+          width="50px"
+          height="50px"
+          nzSrc="assets/images/logo.jpg"
+          class="block object-cover rounded-full"
+          alt="logo"
+        >
+      </a>
       <div class="flex gap-4">
         <span>settings</span>
         <span>profiles</span>

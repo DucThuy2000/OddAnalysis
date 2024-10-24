@@ -1,4 +1,4 @@
-import { LoadingService } from '@shared/services/loading.service';
+import { LoadingService } from '@core/services/loading.service';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';

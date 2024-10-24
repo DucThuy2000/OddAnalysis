@@ -2,17 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
-import { LineChartComponent } from '../line-chart/line-chart.component';
-import { ODDS, TIMELINE } from '@shared/constants';
+import { LineChartComponent } from './components/line-chart/line-chart.component';
+import { ODDS, TIMELINE } from '@core/constants';
 import {
   EStatisticQueryParams,
   ETimelineMatch,
   IStatistic,
   IStatisticPayload,
   IStatisticReponse,
-} from '@shared/models';
+} from '@core/models';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { StatisticService } from '@shared/services/statistic.service';
+import { StatisticService } from '@core/services/statistic.service';
 import {
   FormBuilder,
   FormGroup,
@@ -28,10 +28,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
-import { StatisticDialogComponent } from '@shared/component/statistic-dialog/statistic-dialog.component';
+import { StatisticDialogComponent } from './components/dialog/statistic-dialog.component';
 import _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { STATISTIC_QUERY_PARAMS } from '@shared/constants/routes';
+import { STATISTIC_QUERY_PARAMS } from '@core/constants/routes';
 import { ErrorMessage } from '@shared/component/error-message/error-message.component';
 import { InputNumber } from '@shared/component/form/input-number/input-number.component';
 
@@ -64,7 +64,6 @@ enum FORM_FIELD {
     MatSliderModule,
   ],
   templateUrl: './statistic.component.html',
-  styleUrl: './statistic.component.css',
 })
 export class StatisticComponent implements OnDestroy, OnInit {
   private _destroyed$: Subject<void> = new Subject<void>();

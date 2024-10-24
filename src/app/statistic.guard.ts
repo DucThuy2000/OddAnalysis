@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { PATH } from '@shared/constants/routes';
-import { EStatisticQueryParams } from '@shared/models';
+import { PATH } from '@core/constants/routes';
+import { EStatisticQueryParams } from '@core/models';
 
 export const StatisticGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);

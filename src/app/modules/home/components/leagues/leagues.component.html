@@ -1,0 +1,27 @@
+
+@if(vm$ | async; as vm) {
+  <div class="bg-white shadow-md rounded-lg">
+    <span class="font-medium block p-4">Top Leagues</span>
+    @if(vm.isLoading) {
+      <leagues-skeleton [leagueLength]="3" />
+    } @else {      
+      @if(vm.leagues.length > 0) {
+      <ul>
+        @for(league of vm.leagues; track league.id) {
+        <li
+          class="flex cursor-pointer p-4 gap-3 hover:bg-slate-200"
+          [class.bg-slate-200]="league.id === vm.currentLeague?.id"
+          (click)="onLeagueClick(league)"
+        >
+          <img
+            [src]="league.logo"
+            [alt]="league.name"
+            class="block w-[25px] h-[25px]"
+          />
+          <span class="text-sm">{{ league.name }}</span>
+        </li>
+        }
+      </ul>
+    }}
+  </div>
+}

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'shared-error-message',
@@ -8,6 +8,7 @@ import { Component, Input } from '@angular/core';
     }
   `,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorMessage {
   @Input() message: string = '';

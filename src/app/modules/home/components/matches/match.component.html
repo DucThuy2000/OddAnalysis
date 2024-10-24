@@ -1,0 +1,33 @@
+<div class="shadow-md" app-scroll-near-end (nearEnd)="scrollNearEnd()">
+  @if(vm$ | async; as vm) {
+    @if (vm.matches.length > 0) {
+      @for(matches of vm.matches; track matches.date) {
+        <div class="px-5 py-2 border-gray-100 border-t border-b bg-[#f8f9fa] color-[#1f1f1f]">
+          Match day {{ matches.date }}
+        </div>
+        <div class="grid grid-cols-12 bg-[#fafafa]">
+          @for(match of matches.data; track match.home.id) {
+          <div
+            (click)="onClickMatch(match)"
+            class="flex items-center col-span-6 pl-4 py-6 cursor-pointer border-[0.5px] border-gray-100 bg-white hover:bg-[#fafafa] text-sm">
+            <div class="w-[75%] flex flex-col gap-2 border-[#d2d2d2] border-r py-2">
+              <div class="flex items-center gap-2">
+                <img class="w-[24px] h-[24px] block" [src]="match.home.logo" [alt]="match.home.name">
+                <span>{{ match.home.name }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <img class="w-[24px] h-[24px] block" [src]="match.away.logo" [alt]="match.away.name">
+                <span>{{ match.away.name }}</span>
+              </div>
+            </div>
+            <div class="w-[25%] text-center">{{ match.time }}</div>
+          </div>
+          }
+        </div>
+      }
+    }
+    @if (vm.isLoading) {
+      <home-match-skeleton [matchLength]="5" />
+    }
+  }
+</div>

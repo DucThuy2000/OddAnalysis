@@ -1,7 +1,0 @@
-.selected {
-  background-color: #e5e7eb;
-}
-
-.league-item:hover:not(.selected) {
-  background-color: #f3f4f6;
-}

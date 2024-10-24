@@ -1,10 +1,17 @@
-import { Component, Input, OnInit, Self } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+  Self,
+} from '@angular/core';
 import { ControlValueAccessor, NgControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'shared-input-number-only',
   standalone: true,
   templateUrl: './input-number.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputNumber implements ControlValueAccessor, OnInit {
   @Input() label: string = '';
