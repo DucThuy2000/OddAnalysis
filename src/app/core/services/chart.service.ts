@@ -8,7 +8,7 @@ import {
   IStatistic,
 } from '@core/models';
 import { Chart } from 'chart.js';
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class ChartService {
@@ -34,7 +34,7 @@ export class ChartService {
     timeline: ETimelineMatch
   ): IMatchChartStat => {
     const { previousStatistic } = stats;
-    const matchReversed = _.cloneDeep(previousStatistic).reverse();
+    const matchReversed = cloneDeep(previousStatistic).reverse();
     const result: IMatchChartStat = this.initializeResult();
 
     for (const fixture of matchReversed) {

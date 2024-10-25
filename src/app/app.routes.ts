@@ -10,17 +10,22 @@ import { MatchEffects } from '@core/store/matches/match.effects';
 const routes: Routes = [
   {
     path: PATH.STATISTIC,
-    component: StatisticComponent,
+    loadComponent: () =>
+      import('./modules/statistic/statistic.component').then(
+        (m) => m.StatisticComponent
+      ),
     canActivate: [StatisticGuard],
   },
   {
     path: PATH.HOME,
-    component: HomeComponent,
+    loadComponent: () =>
+      import('./modules/home/home.component').then((m) => m.HomeComponent),
     providers: [provideEffects(LeagueEffects, MatchEffects)],
   },
   {
     path: PATH.WILDCARD,
-    component: HomeComponent,
+    loadComponent: () =>
+      import('./modules/home/home.component').then((m) => m.HomeComponent),
     pathMatch: 'full',
   },
 ];
