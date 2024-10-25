@@ -3,10 +3,20 @@ FROM node:18 as build
 
 WORKDIR /app
 
+# Copy package.json and pnpm-lock.yaml first to leverage Docker's cache
+COPY package.json pnpm-lock.yaml ./
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
+# Install dependencies
+RUN pnpm install
+
+# Copy the rest of the application files
 COPY . .
 
-RUN npm install -g pnpm
-RUN pnpm install && pnpm run build:prod
+# Build the application
+RUN pnpm build:prod
 
 # Stage 2: Serve app with Nginx
 FROM nginx:latest
