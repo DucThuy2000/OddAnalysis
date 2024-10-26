@@ -1,18 +1,22 @@
+  GNU nano 2.9.3                                                                  Dockerfile                                                                            
+
 # Stage 1: Build Angular application
 FROM node:18 as build
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile --prod
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 # Copy the rest of the application files
 COPY . .
 
-# Limit Node.js memory usage during build
-RUN node --max_old_space_size=1024 ./node_modules/.bin/ng build --configuration production
+# Build the Angular application with memory limits
+RUN node --max_old_space_size=1024 ./node_modules/@angular/cli/bin/ng build --configuration production
 
 # Stage 2: Serve app with Nginx
 FROM nginx:latest
