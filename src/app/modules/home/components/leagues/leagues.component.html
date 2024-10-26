@@ -11,7 +11,7 @@
         <li
           class="flex cursor-pointer p-4 gap-3 hover:bg-slate-200"
           [class.bg-slate-200]="league.id === vm.currentLeague?.id"
-          (click)="onLeagueClick(league)"
+          (click)="onLeagueClick(league, vm.currentLeague!)"
         >
           <img
             [src]="league.logo"

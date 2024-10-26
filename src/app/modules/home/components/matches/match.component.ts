@@ -54,12 +54,7 @@ export class MatchesComponent implements OnInit, OnDestroy {
   vm$!: Observable<IMatchesView>;
 
   ngOnInit() {
-    this.vm$ = vmFromLatest<IMatchesView>({
-      matches: this._store.select(matchesSelector),
-      isLoading: this._store
-        .select(matchesStatusSelector)
-        .pipe(map((status) => status === EStateStatus.LOADING)),
-    });
+    this.vm$ = this.buildViewModel();
   }
 
   ngOnDestroy(): void {
@@ -67,15 +62,21 @@ export class MatchesComponent implements OnInit, OnDestroy {
     this._destroyed$.complete();
   }
 
+  buildViewModel() {
+    return vmFromLatest<IMatchesView>({
+      matches: this._store.select(matchesSelector),
+      isLoading: this._store
+        .select(matchesStatusSelector)
+        .pipe(map((status) => status === EStateStatus.LOADING)),
+    });
+  }
+
   scrollNearEnd() {
     this._paginationOption$
       .pipe(
-        switchMap((option) => {
-          if (option.last) {
-            return EMPTY;
-          }
-          return this._queryParams$;
-        }),
+        switchMap((option) =>
+          option.last ? EMPTY : this._store.select(matchQueryParams)
+        ),
         take(1),
         takeUntil(this._destroyed$)
       )
@@ -88,11 +89,19 @@ export class MatchesComponent implements OnInit, OnDestroy {
 
   onClickMatch(match: IMatchDetail): void {
     if (!match) return;
-    const queryParams: STATISTIC_QUERY_PARAMS = {
-      league: '7',
-      home: match.home.id,
-      away: match.away.id,
-    };
-    this._router.navigate([PATH.STATISTIC], { queryParams });
+
+    this._queryParams$
+      .pipe(take(1), takeUntil(this._destroyed$))
+      .subscribe((param) => {
+        if (param) {
+          this._router.navigate([PATH.STATISTIC], {
+            queryParams: {
+              league: param.leagueId,
+              home: match.home.id,
+              away: match.away.id,
+            },
+          });
+        }
+      });
   }
 }

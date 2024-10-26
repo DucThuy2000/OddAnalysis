@@ -29,9 +29,7 @@ export interface IStatisticFixtures {
   opponent: IClub;
 }
 
-export interface IStatistic {
-  name: string;
-  logo: string;
+export interface IStatistic extends IClub {
   previousStatistic: IStatisticFixtures[];
   avgCorner?: number;
   avgCornerA?: number;
@@ -45,7 +43,7 @@ export interface IStatistic {
   totalMatch?: number;
 }
 
-export interface IStatisticReponse {
+export interface IStatisticResponse {
   home?: IStatistic;
   away?: IStatistic;
 }

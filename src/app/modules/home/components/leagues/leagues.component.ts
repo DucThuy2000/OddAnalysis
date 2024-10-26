@@ -32,6 +32,7 @@ export class LeagueComponent {
   vm$!: Observable<ILeagueView>;
 
   ngOnInit() {
+    this._store.dispatch(MatchActions.resetMatchData());
     this._store.dispatch(LeagueActions.getLeagues());
     this.vm$ = vmFromLatest<ILeagueView>({
       leagues: this._store.select(leaguesSelector),
@@ -42,7 +43,8 @@ export class LeagueComponent {
     });
   }
 
-  onLeagueClick(league: ILeague) {
+  onLeagueClick(league: ILeague, currentLeague: ILeague) {
+    if (league.id === currentLeague.id) return;
     this._store.dispatch(MatchActions.resetMatchData());
     this._store.dispatch(LeagueActions.setCurrentLeague({ league }));
   }

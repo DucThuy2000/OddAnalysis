@@ -9,7 +9,7 @@ import {
   ETimelineMatch,
   IStatistic,
   IStatisticPayload,
-  IStatisticReponse,
+  IStatisticResponse,
 } from '@core/models';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { StatisticService } from '@core/services/statistic.service';
@@ -34,8 +34,9 @@ import { ActivatedRoute } from '@angular/router';
 import { STATISTIC_QUERY_PARAMS } from '@core/constants/routes';
 import { ErrorMessage } from '@shared/component/error-message/error-message.component';
 import { InputNumber } from '@shared/component/form/input-number/input-number.component';
+import { WinRateHandicap } from './components/winrate-handicap/winrate-handicap.component';
 
-const DEFAULT_MATHCES = 5;
+const DEFAULT_MATCHES = 5;
 
 enum FORM_FIELD {
   ODD = 'odd',
@@ -62,6 +63,7 @@ enum FORM_FIELD {
     ErrorMessage,
     InputNumber,
     MatSliderModule,
+    WinRateHandicap,
   ],
   templateUrl: './statistic.component.html',
 })
@@ -71,7 +73,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
   // Router query params
   queryParams!: STATISTIC_QUERY_PARAMS;
   form!: FormGroup;
-  statistic!: IStatisticReponse;
+  statistic!: IStatisticResponse;
   oddSelection = ODDS;
   timelineRadio = TIMELINE;
 
@@ -129,7 +131,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
     if (!this.form) return;
     this.form.reset({
       [FORM_FIELD.ODD]: this.oddSelection[0].value,
-      [FORM_FIELD.RECENT_MATCHES]: DEFAULT_MATHCES,
+      [FORM_FIELD.RECENT_MATCHES]: DEFAULT_MATCHES,
       [FORM_FIELD.TIME_LINE]: ETimelineMatch.FULL_TIME,
     });
   }
@@ -138,7 +140,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
     this.form = this.fb.group({
       [FORM_FIELD.ODD]: [this.oddSelection[0].value],
       [FORM_FIELD.RECENT_MATCHES]: [
-        DEFAULT_MATHCES,
+        DEFAULT_MATCHES,
         [Validators.max(10), Validators.min(2)],
       ],
       [FORM_FIELD.TIME_LINE]: [ETimelineMatch.FULL_TIME],
@@ -149,7 +151,7 @@ export class StatisticComponent implements OnDestroy, OnInit {
     const payload: IStatisticPayload = {
       home: this.queryParams.home,
       away: this.queryParams.away,
-      size: this.recentMatchFormControl?.value || DEFAULT_MATHCES,
+      size: this.recentMatchFormControl?.value || DEFAULT_MATCHES,
     };
 
     this.statisticService

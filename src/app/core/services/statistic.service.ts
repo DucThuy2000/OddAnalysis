@@ -5,7 +5,7 @@ import {
   EResponseMessage,
   ICommonResponse,
   IStatisticPayload,
-  IStatisticReponse,
+  IStatisticResponse,
 } from '@core/models';
 import { Observable, map } from 'rxjs';
 
@@ -15,11 +15,11 @@ import { Observable, map } from 'rxjs';
 export class StatisticService {
   constructor(private http: HttpClient) {}
 
-  getStatistic(payload: IStatisticPayload): Observable<IStatisticReponse> {
+  getStatistic(payload: IStatisticPayload): Observable<IStatisticResponse> {
     const url = `${env.api}/statistic`;
 
     return this.http
-      .get<ICommonResponse<IStatisticReponse>>(url, {
+      .get<ICommonResponse<IStatisticResponse>>(url, {
         params: {
           ...payload,
         },
